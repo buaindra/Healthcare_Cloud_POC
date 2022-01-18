@@ -1,5 +1,9 @@
 ## GIT
 
+### Configure:
+        ​git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
+
 ### create a new repository on the command line
         echo "# Healthcare_Cloud_POC" >> README.md
         git init
