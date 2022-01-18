@@ -1,13 +1,21 @@
 # Healthcare_Cloud_POC
 
+### Dicom:
+* Here is a DICOM tags navigator: https://dicom.innolitics.com/ciods
+* More about DICOM format tags here: https://www.dicomlibrary.com/dicom/dicom-tags/
+
+### Sample Dicom data:
+* Kaggle: https://www.kaggle.com/nih-chest-xrays/data
+* Google Public Dataset: https://console.cloud.google.com/storage/browser/gcs-public-data--healthcare-nih-chest-xray?_ga=2.10907004.976218167.1642392885-1549324036.1628145842&_gac=1.216938852.1641280152.Cj0KCQiA2sqOBhCGARIsAPuPK0gKYncGQUOvSkk62bZVxcy65GeAJe9hwS8gbLfKXeiW8UAWvtHlzEcaAjjrEALw_wcB
+
 ### Ref:
 * Gcloud Command: https://cloud.google.com/sdk/gcloud/reference
-* Gsutil command: 
+* Gsutil command: https://cloud.google.com/storage/docs/gsutil/commands/mb
 * Health-Care-Api: https://cloud.google.com/healthcare-api
 * Health-Care-Api: https://cloud.google.com/healthcare-api/docs/reference/rest?apix=true
 
 ### Python Scripting:
-* google doc: https://cloud.google.com/healthcare-api/docs/samples/healthcare-export-dicom-instance-gcs
+* google doc for export diacom instance: https://cloud.google.com/healthcare-api/docs/samples/healthcare-export-dicom-instance-gcs
 * Google Doc for healthcare Dataset: https://cloud.google.com/healthcare-api/docs/how-tos/datasets#gcloud
 * Google Doc for Dicom Store: https://cloud.google.com/healthcare-api/docs/how-tos/dicom
 
