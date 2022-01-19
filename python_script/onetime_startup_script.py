@@ -14,10 +14,11 @@ from google.cloud import storage
 # global variable
 project_id = "poc01-330806"
 location = "us-central1"
-gcs_bucket = project_id+"-healthcare-bucket"
+gcs_bucket = project_id + "-healthcare-bucket"
+gcs_bucket_location = "us"
 composer_env_name = "h-comp-env"
 composer_imgage_version = "composer-1.17.7-airflow-2.1.4"
-content_uri = gcs_bucket+"/**.dcm"
+content_uri = gcs_bucket+"/input/000000*.dcm"
 
 # Healthcare API
 dataset_id = "dicom-healthcare-dataset"
@@ -35,13 +36,57 @@ enable_healthcare_api_out = subprocess.check_output(shlex.split(enable_healthcar
 # create GCS bucket
 # gsutil mb -c standard -b off -l $location gs://$GCS_BUCKET_
 
-def create_gcs_bucket(project_id, gcs_bucket):
+
+def create_gcs_bucket(gcs_bucket, project_id, gcs_bucket_location):
     gcs_client = storage.Client()
-    bucket_response = gcs_client.create_bucket(bucket_or_name = gcs_bucket, project = project_id, location = location)
+    
+    bucket = gcs_client.bucket(gcs_bucket)
+    bucket.storage_class = "STANDARD"
+    bucket.requester_pays = True
+    bucket_response = gcs_client.create_bucket(bucket_or_name = bucket, location = gcs_bucket_location)
     print("Created GCS Bucket: gs://{}".format(gcs_bucket))
     return bucket_response
 
+def sample_dicom_data_load(gcs_bucket, project_id):
+    
+    source_bucket_uri = "gcs-public-data--healthcare-nih-chest-xray/dicom/000000*.dcm"
+    command = "gsutil cp -r -u gs://"+ source_bucket_uri + " gs://" + gcs_bucket +"/input/dicom/"
+    output = subprocess.check_output(shlex.split(command))
+    print("Added Source Data into Bucket gs://{}".format(gcs_bucket))
+    return output
+    
+    '''
+    gcs_client = storage.Client()
+    dest_bucket = gcs_client.get_bucket(gcs_bucket)
+    dest_blob = dest_bucket.blob("/input/dicom")
+    dest_blob.upload_from_filename("gs://gcs-public-data--healthcare-nih-chest-xray/dicom/000000*.dcm")
+    print("Added Source Data into Bucket gs://{}".format(gcs_bucket))
+    '''
+    '''
+    gcs_client = storage.Client()
+    source_bucket = gcs_client.bucket(bucket_name="gcs-public-data--healthcare-nih-chest-xray", user_project=project_id)
+    source_blob = source_bucket.blob("/dicom") 
+    destination_bucket = gcs_client.bucket(bucket_name=gcs_bucket, user_project=project_id)
+    destination_blob = destination_bucket.blob("input/dicom")
+    blob_copy = source_bucket.copy_blob(source_blob, destination_bucket, destination_blob)
+    print("Added Source Data into Bucket gs://{}".format(gcs_bucket))
+    return blob_copy
+    '''
+    '''
+    bucket_name = "gcs-public-data--healthcare-nih-chest-xray"
+    blob_name = "/dicom"
+    new_bucket_name = gcs_bucket
+    new_blob_name = "/input/dicom"
 
+    storage_client = storage.Client()
+    source_bucket = storage_client.get_bucket(bucket_name)
+    source_blob = source_bucket.blob(blob_name)
+    destination_bucket = storage_client.get_bucket(new_bucket_name)
+
+    new_blob = source_bucket.copy_blob(
+        source_blob, destination_bucket, new_blob_name)
+    return new_blob
+    '''
 # create composer environment
 def create_composer_env(composer_env_name, location, project_id, composer_imgage_version):
     composer_env_create_gcloud = "gcloud composer environments create "+ composer_env_name + " --location "+ location + " --async" \
@@ -122,10 +167,13 @@ def import_dicom_instance_from_gcs(project_id, location, dataset_id, dicom_store
 
 
 if __name__ == "__main__":
-    #create_gcs_bucket(project_id, gcs_bucket)
+    #create_gcs_bucket(gcs_bucket, project_id, gcs_bucket_location)
+    sample_dicom_data_load(gcs_bucket, project_id)
     #create_composer_env(composer_env_name, location, project_id, composer_imgage_version)
-    #create_healthcare_dataset(project_id, location, dataset_id) 
-    #create_dicom_store(project_id, location, dataset_id, dicom_store_id)
-    #import_dicom_instance_from_gcs(project_id, location, dataset_id, dicom_store_id, content_uri)
-    pass
+    create_healthcare_dataset(project_id, location, dataset_id) 
+    create_dicom_store(project_id, location, dataset_id, dicom_store_id)
+    import_dicom_instance_from_gcs(project_id, location, dataset_id, dicom_store_id, content_uri)
+
+
+
     

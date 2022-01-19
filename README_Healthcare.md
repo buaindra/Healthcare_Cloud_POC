@@ -11,6 +11,8 @@
 ### Ref:
 * Gcloud Command: https://cloud.google.com/sdk/gcloud/reference
 * Gsutil command: https://cloud.google.com/storage/docs/gsutil/commands/mb
+* Gsutil sample code with Python: https://googleapis.dev/python/storage/latest/client.html
+* Composer Sample DAG: https://cloud.google.com/composer/docs/samples
 * Health-Care-Api: https://cloud.google.com/healthcare-api
 * Health-Care-Api: https://cloud.google.com/healthcare-api/docs/reference/rest?apix=true
 
